@@ -18,9 +18,9 @@ folder you would like to store your local copy of your repo. You should replace
 `<url>` with the HTTPS link to your GitHub repo.
 
 ```{bash, eval = FALSE}
-cd <path>
-git _________ <url>
-cd _________
+#cd 'C:\Users\iorueta\Desktop\PC IGNACIO\0.LSE\MPA DSPP\1. Autumm Term 2024\MY472 Data for Data Scientists\Seminars'
+#git clone "https://github.com/IgnacioOrueta/Seminar02.git"
+#Ecd 'C:\Users\iorueta\Desktop\PC IGNACIO\0.LSE\MPA DSPP\1. Autumm Term 2024\MY472 Data for Data Scientists\Seminars\Seminar02'
 ```
 
 Now, save this Rmd file, close it, and move it into your local copy of the 
@@ -36,15 +36,15 @@ are only staging files you want to save to GitHub. Once you're satisfied stage
 as follows.
 
 ```{bash, eval = FALSE}
-git _________ .
+git ls .
 ```
 
 Commit and push your changes to your repo, using "added seminar files" as your 
 commit message.
 
 ```{bash, eval = FALSE}
-git _________ -m "_________"
-git _________
+git commit -m "added seminar files"
+git push
 ```
 
 Check on the GitHub website that this file now appears in your repository.
@@ -53,13 +53,15 @@ Now, let's get to work with R. Start with setting up your workspace:
 
 ```{r setup}
 # load in libraries:
-suppressMessages(library(_________))
-# or just library(____________)
+suppressMessages(library(tidyverse))
+# or just 
+library(tidyverse)
+library(dplyr)
 
 # read ip_and_unemployment.csv
-ip_and_unemployment <- _________________
-head(______)
-
+#setwd("C:\Users\iorueta\Desktop\PC IGNACIO\0.LSE\MPA DSPP\1. Autumm Term 2024\MY472 Data for Data Scientists\Seminars\Seminar02")
+ip_and_unemployment <- read.csv("ip_and_unemployment.csv")
+head(ip_and_unemployment)
 ```
     
 What are the highest unemployment rates for France and Spain during the time of 
@@ -73,22 +75,27 @@ would do this for any country?)
 
 # data processing
 ipu_clean <- ip_and_unemployment %>%
-  pivot_____(id_cols = c(_____, _____), 
-              names_from = ______, values_from = ______)  # long to wide
+  pivot_wider(id_cols = c('country', 'date'), 
+              names_from = series, values_from = value)  # long to wide
+
+head(ipu_clean)
 
 # France
 ipu_clean %>%
-  filter(country == _____) %>%
-  _____(unemployment == max(_______, na.rm = TRUE) | 
-           ip == min(ip, na.rm = TRUE)) 
+  filter(country == "france") %>%
+  summarise(
+    highest_unemployment = max(unemployment, na.rm = TRUE),
+    ip = min(ip, na.rm = TRUE)
+  )
     # need to add na.rm = TRUE, because ip contains NA and min() will return NA
     # if there is one NA, unless na.rm = TRUE
 
 # Spain
 ipu_clean %>%
-  _____(_____ == _____) %>%
-  filter(unemployment == ________________________  | 
-           __ == ____________________)
+  filter(country == 'spain') %>%
+  summarise(
+    highest_unemployment = max(unemployment, na.rm = TRUE), 
+    ip = min(ip,na.rm = TRUE))
 
 # Optional --------------------------------------------------------------------
 filter_worst_months <- function(x) {
@@ -113,9 +120,9 @@ functions? (_Optional_: can you calculate the % of values that are non-NA?)
 # Q2 --------------------------------------------------------------------------
 # Non-NA group_by and summarise
 ipu_clean %>%
-  _______(country) %>%
-  __________(nonNA_ip = sum(!is.na(__)),
-            nonNA_ue = sum(_________________))
+  group_by(country) %>%
+  summarise(nonNA_ip = sum(!is.na(ip)),
+            nonNA_ue = sum(!is.na(unemployment)))
 
 # Optional --------------------------------------------------------------------
 ipu_clean %>%
