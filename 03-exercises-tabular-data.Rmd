@@ -147,9 +147,9 @@ local git repository and the remote copy on GitHub reflects your work so far.
 When you commit your changes, use "finished first half" as your commit message.
 
 ```{bash, eval = FALSE}
-git _________ 03-exercises-tabular-data.Rmd
-git _________ -m "_________"
-git _________
+git add 03-exercises-tabular-data.Rmd
+git commit -m "Saving my files"
+git push
 ```
 
 Before you do the final analysis, create a branch of your git repository that
@@ -157,9 +157,10 @@ you will use to complete the final analysis. Call this branch `final` to capture
 the idea that you are using it for your final analysis. Switch to the final 
 branch and double check you are on the final branch.
 
+
 ```{bash, eval = FALSE}
-git _________ final 
-git _________ final
+git checkout -b final 
+git push origin final
 git branch
 ```
 
@@ -181,11 +182,12 @@ computation, some can be simpler than the solution sketch here)
 ```{r q3}
 # Q3 --------------------------------------------------------------------------
 # Data transformations with mutate
-ipu_clean %>%
-  _______(ip_sq = _______,
-         ________________ = _______________,
-         ip_unemployment = ___________________) %>%
-  head()
+ipu_clean <- ipu_clean %>%
+  transform(ip_sq = ip*ip,
+         ln_unemployment = log(unemployment),
+         ip_unemployment = ip*unemployment)
+
+head(ipu_clean)
 
 # Optional --------------------------------------------------------------------
 # The skeleton code acts a possible hint, but you may prefer to do this more complex task your own way
@@ -211,10 +213,10 @@ remote copy on GitHub reflects your work so far. When you commit your changes,
 use "finished second half" as your commit message.
 
 ```{bash, eval = FALSE}
-git _________ 03-exercises-tabular-data.Rmd
-git _________ -m "_________"
+git add 03-exercises-tabular-data.Rmd
+git commit -m "Final save"
 git push --set-upstream origin final
-git _________ 
+git status 
 ```
 
 (Pop quiz: what is the third line above doing?)
